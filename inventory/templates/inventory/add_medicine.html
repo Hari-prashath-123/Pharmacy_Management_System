@@ -1,0 +1,119 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Add Medicine - Pharmacy Pro{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Add New Medicine</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                {{ form.name.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                {{ form.category.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.price.id_for_label }}" class="form-label">
+                                {{ form.price.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                                <div class="text-danger small">{{ form.price.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.stock_quantity.id_for_label }}" class="form-label">
+                                {{ form.stock_quantity.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.stock_quantity }}
+                            {% if form.stock_quantity.errors %}
+                                <div class="text-danger small">{{ form.stock_quantity.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.manufacture_date.id_for_label }}" class="form-label">
+                                {{ form.manufacture_date.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.manufacture_date }}
+                            {% if form.manufacture_date.errors %}
+                                <div class="text-danger small">{{ form.manufacture_date.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.expiry_date.id_for_label }}" class="form-label">
+                                {{ form.expiry_date.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.expiry_date }}
+                            {% if form.expiry_date.errors %}
+                                <div class="text-danger small">{{ form.expiry_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        <strong>Note:</strong> All fields are required. Make sure to enter valid dates for manufacture and expiry.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'medicine_dashboard' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Add Medicine
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Help -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6><i class="bi bi-lightbulb"></i> Quick Tips:</h6>
+                <ul class="small mb-0">
+                    <li>Enter the complete medicine name as it appears on the packaging</li>
+                    <li>Categories examples: Antibiotic, Painkiller, Antiseptic, Vitamin, etc.</li>
+                    <li>Price should be in dollars (USD)</li>
+                    <li>Expiry date must be after the manufacture date</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

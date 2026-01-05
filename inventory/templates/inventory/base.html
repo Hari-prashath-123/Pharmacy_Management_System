@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pharmacy Management System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: linear-gradient(180deg, #0d6efd 0%, #0a58ca 100%);
+            padding-top: 20px;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 20px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-brand i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #ffc107;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Top Header */
+        .top-header {
+            background-color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .top-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #333;
+        }
+        
+        /* Card Styles */
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .stat-card {
+            border-left: 4px solid;
+        }
+        
+        .stat-card.primary { border-left-color: #0d6efd; }
+        .stat-card.warning { border-left-color: #ffc107; }
+        .stat-card.danger { border-left-color: #dc3545; }
+        
+        /* Footer */
+        footer {
+            background-color: white;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            
+            .sidebar.show {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        /* Table Styles */
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .expiring-soon {
+            background-color: #fff3cd !important;
+            border-left: 4px solid #ffc107;
+            font-weight: 500;
+        }
+        
+        .expiring-soon:hover {
+            background-color: #ffe69c !important;
+        }
+        
+        .expired-row {
+            background-color: #f8d7da !important;
+            border-left: 4px solid #dc3545;
+            font-weight: 500;
+        }
+        
+        .expired-row:hover {
+            background-color: #f1aeb5 !important;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-capsule"></i>
+            Pharmacy Pro
+            <div style="font-size:1rem; margin-top:10px;">
+                <i class="bi bi-cash-coin"></i> Cash: ₹{{ cash_box.current_cash|default:'0.00' }}
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'medicine_dashboard' %}" class="{% if request.resolver_match.url_name == 'medicine_dashboard' %}active{% endif %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'medicine_list' %}" class="{% if request.resolver_match.url_name == 'medicine_list' %}active{% endif %}">
+                    <i class="bi bi-table"></i> Medicine List
+                </a>
+            </li>
+            {% if user.is_superuser or user.groups.all.0.name == 'Manager' %}
+            <li>
+                <a href="{% url 'add_medicine' %}" class="{% if request.resolver_match.url_name == 'add_medicine' %}active{% endif %}">
+                    <i class="bi bi-plus-circle-fill"></i> Add Medicine
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="{% url 'search_medicine' %}" class="{% if request.resolver_match.url_name == 'search_medicine' %}active{% endif %}">
+                    <i class="bi bi-search"></i> Search
+                </a>
+            </li>
+            {% if user.is_superuser or user.groups.all.0.name == 'Manager' %}
+            <li>
+                <a href="{% url 'employee_list' %}">
+                    <i class="bi bi-people-fill"></i> Employees
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="{% url 'delete_expired' %}">
+                    <i class="bi bi-trash-fill"></i> Delete Expired
+                </a>
+            </li>
+            {% if user.is_authenticated %}
+            <li style="padding: 0 15px;">
+                <a href="{% url 'logout' %}" style="display: block; padding: 12px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 6px; text-align: center; transition: background-color 0.3s;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </li>
+            {% endif %}
+            {% if user.is_superuser or user.groups.all.0.name == 'Manager' %}
+            <li style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                <a href="/admin/">
+                    <i class="bi bi-gear-fill"></i> Admin Panel
+                </a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <li style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px; padding-top: 10px;">
+                <div style="padding: 15px 25px; color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+                    <i class="bi bi-person-circle"></i> {{ user.username }}
+                    <br>
+                    <small>
+                        {% if user.is_superuser %}
+                            Administrator
+                        {% elif user.groups.all %}
+                            {{ user.groups.first.name }}
+                        {% else %}
+                            User
+                        {% endif %}
+                    </small>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle-fill"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Page Content -->
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer -->
+        <footer class="text-center text-muted py-3 mt-5">
+            <p class="mb-0">&copy; 2026 Pharmacy Pro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
