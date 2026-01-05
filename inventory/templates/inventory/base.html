@@ -209,9 +209,12 @@
             </li>
             {% if user.is_authenticated %}
             <li style="padding: 0 15px;">
-                <a href="{% url 'logout' %}" style="display: block; padding: 12px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 6px; text-align: center; transition: background-color 0.3s;">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" style="width: 100%; padding: 12px 15px; background-color: #dc3545; color: white; border: none; border-radius: 6px; text-align: center; transition: background-color 0.3s;">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
             </li>
             {% endif %}
             {% if user.is_superuser or user.groups.all.0.name == 'Manager' %}
